@@ -310,11 +310,16 @@ export class MongoAdapter implements FilteredAdapter, BatchAdapter {
   }
 
   private loadPolicyLine(line: CasbinRule, model: Model) {
+    const escapeValue = (value) => {
+            if (!value) return '';
+            return `"${value.replace(/"/g, '\\"')}"`;
+    };
     const result =
       line.ptype +
       ', ' +
       [line.v0, line.v1, line.v2, line.v3, line.v4, line.v5]
         .filter(n => n)
+        .map(escapeValue)
         .join(', ');
     Helper.loadPolicyLine(result, model);
   }
